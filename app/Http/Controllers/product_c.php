@@ -35,7 +35,7 @@ class product_c extends Controller
      */
     public function store(Request $request)
     {
-        //
+      //
     }
 
     /**
@@ -78,7 +78,7 @@ class product_c extends Controller
      // Lighthouse.jpg
      // Penguins.jpg
      // Tulips.jpg
-      $upload_input = image::edit($images,"","","","","");
+      $upload_input = image::edit($images,$id,"/localhost/JobHuntTest-ESP/public/a/".$id."/update","3j5yRIVTMvuqXBLWCBgUDxmQiLwqHYgQDoqYQg4i");
       echo $upload_input;
     }
 
@@ -91,7 +91,16 @@ class product_c extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+      // dd($_POST);
+      if (isset($_POST["action"]["create"])) {
+        image::create($_FILES, $_POST, $id);
+
+      } elseif (isset($_POST["action"]["delete"])) {
+        // $image_id = $_POST["action"]["delete"];
+        // image::delete($image_id);
+      }
+
+      // return redirect('/a/'.$id."/edit");
     }
 
     /**

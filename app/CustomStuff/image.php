@@ -4,7 +4,7 @@ namespace App\CustomStuff;
 
 class image {
 
-  public static function edit($images,$parent_id,$edit_url,$create_url,$update_url,$destroy_url){
+  public static function edit($images,$parent_id,$update_url,$csrf_token){
 
 
     ob_start();
@@ -30,9 +30,9 @@ class image {
     .Fl_Wr {flex-wrap: wrap;} */
 
     </style>
-    <form action="" method="post" enctype="multipart/form-data">
-
-        <h1>Create</h1>
+    <form action="<?php echo $update_url ?>" method="post" enctype="multipart/form-data">
+      <input type="hidden" name="_token" value="<?php echo $csrf_token ?>">
+      <h1>Create</h1>
       <div class="BgCo_White  BgCo_Grey Ma_10px BoRa_10px Di_InBl">
 
         <div class="">
@@ -49,20 +49,13 @@ class image {
             </tr>
             <tr>
               <td>
-                Name
-              </td>
-              <td>
-                <input class="Pa_10px BgCo_White BoRa_10px Ma_10px Di_InBl" type="text" name="" value="">
-              </td>
-            </tr>
-            <tr>
-              <td>
                 Create
               </td>
               <td>
-                <a class="Pa_10px BgCo_White BoRa_10px Ma_10px Di_InBl" href="<?php echo $destroy_url ?>?action=delete&parentid=">
+                <button type="submit" class="Pa_10px BgCo_White BoRa_10px Ma_10px Di_InBl" name="action[create]" value="">
                   Create
-                </a>
+                </button>
+
               </td>
             </tr>
           </table>
@@ -92,27 +85,10 @@ class image {
                   Delete
                 </td>
                 <td>
-                  <a class="Pa_10px BgCo_White BoRa_10px Ma_10px Di_InBl" href="<?php echo $destroy_url ?>?action=delete&id=<?php echo $value["id"] ?> ">
+                  <button type="submit" class="Pa_10px BgCo_White BoRa_10px Ma_10px Di_InBl" name="action[delete]" value="<?php echo $value["id"] ?>">
                     Delete
-                  </a>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Name
-                </td>
-                <td>
-                  <input class="Pa_10px BgCo_White BoRa_10px Ma_10px Di_InBl" type="text" name="" value="<?php echo $value["name"] ?>">
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Update
-                </td>
-                <td>
-                  <a class="Pa_10px BgCo_White BoRa_10px Ma_10px Di_InBl" href="<?php echo $destroy_url ?>?action=delete&id=<?php echo $value["id"] ?> ">
-                    Update
-                  </a>
+                  </button>
+
                 </td>
               </tr>
             </table>
@@ -130,11 +106,54 @@ class image {
     return $result;
   }
 
-  public static function update($id){
+  public static function create($Request_FILES, $Request_POST, $parent_id){
 
-  }
+    $target_dir = "uploads/";
+    $target_file = $target_dir . basename($Request_FILES["fileToUpload"]["name"]);
+    $uploadOk = 1;
+    $imageFileType = strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+    // Check if image file is a actual image or fake image
+    if(isset($Request_POST["submit"])) {
+      $check = getimagesize($Request_FILES["fileToUpload"]["tmp_name"]);
+      if($check !== false) {
+        echo "File is an image - " . $check["mime"] . ".";
+        $uploadOk = 1;
+      } else {
+        echo "File is not an image.";
+        $uploadOk = 0;
+      }
+    }
+    // Check if file already exists
+    if (file_exists($target_file)) {
+      echo "Sorry, file already exists.";
+      $uploadOk = 0;
+    }
+    // Check file size
+    if ($Request_FILES["fileToUpload"]["size"] > 500000) {
+      echo "Sorry, your file is too large.";
+      $uploadOk = 0;
+    }
+    // Allow certain file formats
+    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
+    && $imageFileType != "gif" ) {
+      echo "Sorry, only JPG, JPEG, PNG & GIF files are allowed.";
+      $uploadOk = 0;
+    }
+    // Check if $uploadOk is set to 0 by an error
+    if ($uploadOk == 0) {
+      echo "Sorry, your file was not uploaded.";
+      // if everything is ok, try to upload file
+    } else {
+      if (move_uploaded_file($Request_FILES["fileToUpload"]["tmp_name"], $target_file)) {
+        echo "The file ". basename( $Request_FILES["fileToUpload"]["name"]). " has been uploaded.";
+      } else {
+        echo "Sorry, there was an error uploading your file.";
+      }
+    }
 
-  public static function create($parent_id){
+
+
+
 
   }
 

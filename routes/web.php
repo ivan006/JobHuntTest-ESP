@@ -16,5 +16,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-
-Route::resource('/a', 'product_c');
+Route::get('/a/{id}/edit', 'product_c@edit');
+Route::post('/a/{id}/update', 'product_c@update');
+// Route::resource('/a', 'product_c');
