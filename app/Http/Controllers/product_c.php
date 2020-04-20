@@ -57,7 +57,28 @@ class product_c extends Controller
      */
     public function edit($id)
     {
-      $upload_input = image::upload_input();
+      $images = array(
+        array(
+          "id"=>"1",
+          "name"=>"Image 1",
+          "url"=>"http://localhost/localhost/JobHuntTest-ESP/public/images/Desert.jpg ",
+        ),
+        array(
+          "id"=>"2",
+          "name"=>"Image 2",
+          "url"=>"http://localhost/localhost/JobHuntTest-ESP/public/images/Chrysanthemum.jpg",
+        ),
+      );
+
+
+     // Desert.jpg
+     // Hydrangeas.jpg
+     // Jellyfish.jpg
+     // Koala.jpg
+     // Lighthouse.jpg
+     // Penguins.jpg
+     // Tulips.jpg
+      $upload_input = image::edit($images,"","","","","");
       echo $upload_input;
     }
 
