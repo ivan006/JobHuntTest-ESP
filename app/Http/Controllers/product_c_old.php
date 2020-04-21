@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\CustomStuff\image;
-use App\image as imagemodel;
 
 class product_c extends Controller
 {
@@ -56,9 +55,8 @@ class product_c extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit()
+    public function edit($id)
     {
-      $id = 1;
       $images = array(
         array(
           "id"=>"1",
@@ -80,13 +78,8 @@ class product_c extends Controller
      // Lighthouse.jpg
      // Penguins.jpg
      // Tulips.jpg
-     //
-
-     $parent_id = $id;
-     $update_url = "/localhost/JobHuntTest-ESP/public/update";
-
-
-     return view('product', compact("images","id","update_url"));
+      $upload_input = image::edit($images,$id,"/localhost/JobHuntTest-ESP/public/a/".$id."/update","3j5yRIVTMvuqXBLWCBgUDxmQiLwqHYgQDoqYQg4i");
+      echo $upload_input;
     }
 
     /**
@@ -96,33 +89,18 @@ class product_c extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request)
+    public function update(Request $request, $id)
     {
-      $id = 1;
       // dd($_POST);
       if (isset($_POST["action"]["create"])) {
-
-        $Request_FILES = $_FILES;
-        $Request_POST = $_POST;
-        $parent_id = $id;
-        $crop_preset = "resize_maxwidth_300";
-
-        $image_url = imagemodel::create_helper__upload_to_server($Request_FILES, $Request_POST);
-
-        $image_object = new image;
-        if ($crop_preset == "crop_square_and_resize_maxwidth_250") {
-          $image_object->crop_square($image_url);
-          $image_object->resize_by_max($image_url,"250","height");
-        } elseif ($crop_preset == "resize_maxwidth_300") {
-          $image_object->resize_by_max($image_url,"300","height");
-        }
+        image::create($_FILES, $_POST, $id, "resize_maxwidth_300");
 
       } elseif (isset($_POST["action"]["delete"])) {
         $image_id = $_POST["action"]["delete"];
         image::destroy($image_id);
       }
 
-      return redirect('/');
+      return redirect('/a/'.$id."/edit");
     }
 
     /**
